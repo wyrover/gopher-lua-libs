@@ -199,6 +199,7 @@ func New(L *lua.LState) int {
 	client.Transport = transport
 	ud := L.NewUserData()
 	ud.Value = client
+
 	L.SetMetatable(ud, L.GetTypeMetatable("http_client_ud"))
 	L.Push(ud)
 	return 1

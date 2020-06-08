@@ -2,10 +2,10 @@ package http
 
 import (
 	"bytes"
+	lua "github.com/yuin/gopher-lua"
 	"io/ioutil"
 	"net/http"
-
-	lua "github.com/yuin/gopher-lua"
+	"net/url"
 )
 
 type luaRequest struct {
@@ -80,6 +80,7 @@ func DoRequest(L *lua.LState) int {
 	}
 	defer response.Body.Close()
 	headers := L.NewTable()
+
 	for k, v := range response.Header {
 		if len(v) > 0 {
 			headers.RawSetString(k, lua.LString(v[0]))
@@ -96,6 +97,28 @@ func DoRequest(L *lua.LState) int {
 	L.SetField(result, `code`, lua.LNumber(response.StatusCode))
 	L.SetField(result, `body`, lua.LString(string(data)))
 	L.SetField(result, `headers`, headers)
+	L.Push(result)
+	return 1
+}
+
+func GetCookie(L *lua.LState) int {
+	client := checkClient(L)
+	req := L.CheckString(2)
+
+	url,_ := url.Parse(req)
+	cookies := client.Client.Jar.Cookies(url)
+
+	result := L.NewTable()
+
+	if cookies == nil {
+		L.Push(lua.LNil)
+		return 1
+	}
+
+	for _,v := range(cookies){
+		L.SetField(result, v.Name, lua.LString(v.Value))
+	}
+
 	L.Push(result)
 	return 1
 }
