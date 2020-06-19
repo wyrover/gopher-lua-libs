@@ -19,7 +19,7 @@ const (
 	// default http User Agent
 	DefaultUserAgent = `gopher-lua`
 	// default http timeout
-	DefaultTimeout = 10 * time.Second
+	DefaultTimeout = 60 * time.Second
 	// default don't ignore ssl
 	insecureSkipVerify = false
 )
