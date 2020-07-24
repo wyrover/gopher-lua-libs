@@ -122,3 +122,13 @@ func GetCookie(L *lua.LState) int {
 	L.Push(result)
 	return 1
 }
+
+func SetHeader(L *lua.LState) int {
+	client := checkClient(L)
+	key := L.CheckString(2)
+	value := L.CheckString(3)
+
+	client.headers[key] = value
+
+	return 0
+}

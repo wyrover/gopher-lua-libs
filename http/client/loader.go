@@ -22,6 +22,7 @@ func Loader(L *lua.LState) int {
 	L.SetField(http_client_ud, "__index", L.SetFuncs(L.NewTable(), map[string]lua.LGFunction{
 		"do_request": DoRequest,
 		"get_cookie": GetCookie,
+		"set_header": SetHeader,
 	}))
 
 	http_request_ud := L.NewTypeMetatable(`http_request_ud`)
